@@ -37,6 +37,21 @@ def read_games():
 
 def read_review_dataset(filename):
     df = pd.read_csv(filepath_or_buffer="data/" + filename)
+    tags = []
+
+    for i in range(0, len(df.index)):
+        game_title = df["title"][i]
+        current_game_tags = []
+
+        for game in games:
+            if game.title == game_title:
+                current_game_tags = game.tags
+                break
+
+        tags.append(current_game_tags)
+
+    df["tags"] = tags
+
     return df
 
 
@@ -74,6 +89,5 @@ def read_test_dataset():
 
 
 ds_games = read_games()
-print(ds_games["developer"])
 ds_train = read_train_dataset()
 ds_test = read_test_dataset()
