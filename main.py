@@ -4,19 +4,28 @@ import sklearn.feature_extraction.text as txt
 import sklearn.naive_bayes as nb
 from sklearn import metrics
 import itertools
+import pprint
 
-from read_data import game_tags, read_test_dataset, read_train_dataset, read_games
+from read_data import game_tags, game_tag_count, read_test_dataset, read_train_dataset, read_games, \
+    get_game_tags_in_test
 
-selected_game_tags = ["MMORPG", "Racing"]
+selected_game_tags = ["Action RPG", "Card Game"]
 
 ds_games = read_games()
 ds_train = read_train_dataset(selected_game_tags)
 ds_test = read_test_dataset(selected_game_tags)
+get_game_tags_in_test()
 n_train = len(ds_train)
 n_test = len(ds_test)
 
-print("Game tags found in dataset:")
-print(sorted(game_tags))
+
+def print_game_tags():
+    print("Game tags found in dataset:")
+    print(sorted(game_tags))
+    pprint.pprint(game_tag_count)
+
+
+print_game_tags()
 
 n_words = np.zeros((25, 1))
 train_accuracy = np.zeros((25, 1))
@@ -51,6 +60,9 @@ vectorizer = txt.CountVectorizer(stop_words='english', min_df=min_df)
 DT_train = vectorizer.fit_transform(ds_train["user_review"])
 vocabulary_list = vectorizer.get_feature_names_out()
 vocabulary = np.asarray(vocabulary_list)  # vocabulary in 1D array
+print()
+print(vocabulary)
+print()
 
 # Fitting the final model
 clf_MNB = nb.MultinomialNB(alpha=alpha)

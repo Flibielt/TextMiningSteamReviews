@@ -27,8 +27,6 @@ def read_games():
         game.overview = df['overview'][i]
 
         games.append(game)
-        for tag in tags:
-            game_tags.add(tag)
 
         df.at[df.index[i], 'tags'] = tags
 
@@ -86,6 +84,23 @@ def read_test_dataset(selected_game_tags):
         user_review.year = row['year']
         user_review.user_review = row['user_review']
 
-        training_dataset.append(user_review)
+        testing_dataset.append(user_review)
 
     return df
+
+
+def get_game_tags_in_test():
+    df = pd.read_csv(filepath_or_buffer="data/test.csv")
+
+    for i in range(0, len(df.index)):
+        game_title = df["title"][i]
+
+        for game in games:
+            if game.title == game_title:
+                for tag in game.tags:
+                    game_tags.add(tag)
+                    if tag in game_tag_count.keys():
+                        count = game_tag_count.get(tag)
+                        game_tag_count.update({tag: count + 1})
+                    else:
+                        game_tag_count[tag] = 1

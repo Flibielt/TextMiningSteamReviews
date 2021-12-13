@@ -2,6 +2,7 @@ games = []
 training_dataset = []
 testing_dataset = []
 game_tags = set()
+game_tag_count = {}
 
 
 class Game:
