@@ -35,59 +35,58 @@ def read_games():
     return df
 
 
-def read_review_dataset(filename):
+def read_review_dataset(filename, selected_game_tags):
     df = pd.read_csv(filepath_or_buffer="data/" + filename)
     tags = []
 
     for i in range(0, len(df.index)):
         game_title = df["title"][i]
-        current_game_tags = []
 
+        found_game_tag = -1
         for game in games:
             if game.title == game_title:
-                current_game_tags = game.tags
-                break
+                for index in range(0, len(selected_game_tags)):
+                    if selected_game_tags[index] in game.tags:
+                        found_game_tag = index
+                        break
 
-        tags.append(current_game_tags)
+        tags.append(found_game_tag)
 
-    df["tags"] = tags
+    df["tag"] = tags
+    filtered_df = df[df["tag"] != -1]
 
-    return df
+    return filtered_df
 
 
-def read_train_dataset():
+def read_train_dataset(selected_game_tags):
     """Reads the training dataset"""
-    df = read_review_dataset("train.csv")
+    df = read_review_dataset("train.csv", selected_game_tags)
 
-    for i in range(0, len(df.index)):
+    for index, row in df.iterrows():
         user_review = UserReview()
-        user_review.id = df['review_id'][i]
-        user_review.title = df['title'][i]
-        user_review.year = df['year'][i]
-        user_review.user_review = df['user_review'][i]
-        user_review.suggested = df['user_suggestion'][i] == '1'
+        user_review.id = index
+        user_review.title = row['title']
+        user_review.year = row['year']
+        user_review.user_review = row['user_review']
+        user_review.suggested = row['user_suggestion'] == '1'
 
         training_dataset.append(user_review)
 
     return df
 
 
-def read_test_dataset():
+def read_test_dataset(selected_game_tags):
     """Reads the test dataset"""
-    df = read_review_dataset("train.csv")
+    df = read_review_dataset("train.csv", selected_game_tags)
 
-    for i in range(0, len(df.index)):
+    for index, row in df.iterrows():
         user_review = UserReview()
-        user_review.id = df['review_id'][i]
-        user_review.title = df['title'][i]
-        user_review.year = df['year'][i]
-        user_review.user_review = df['user_review'][i]
+        user_review.id = index
+        user_review.title = row['title']
+        user_review.year = row['year']
+        user_review.user_review = row['user_review']
+        user_review.suggested = row['user_suggestion'] == '1'
 
         training_dataset.append(user_review)
 
     return df
-
-
-ds_games = read_games()
-ds_train = read_train_dataset()
-ds_test = read_test_dataset()
