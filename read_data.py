@@ -77,7 +77,7 @@ def read_train_dataset(selected_game_tags):
 
 def read_test_dataset(selected_game_tags):
     """Reads the test dataset"""
-    df = read_review_dataset("train.csv", selected_game_tags)
+    df = read_review_dataset("test.csv", selected_game_tags)
 
     for index, row in df.iterrows():
         user_review = UserReview()
@@ -85,7 +85,6 @@ def read_test_dataset(selected_game_tags):
         user_review.title = row['title']
         user_review.year = row['year']
         user_review.user_review = row['user_review']
-        user_review.suggested = row['user_suggestion'] == '1'
 
         training_dataset.append(user_review)
 
